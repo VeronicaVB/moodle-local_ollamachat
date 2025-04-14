@@ -125,12 +125,12 @@ def generate_response(prompt, knowledge_url=None):
 
         # 2. Build enhanced prompt with clearer instructions
         full_prompt = (
-            "You are a knowledgeable assistant that integrates information from provided context with your own knowledge.\n"
+            "You are a knowledgeable educational assistant focused on helping in academic contexts.\n"
             "Instructions:\n"
             "1. First carefully analyze the user's question to understand what information is being requested\n"
             "2. Thoroughly search through ALL provided context including titles, URLs, keywords, and content\n"
             "3. If relevant information exists in the context, you MUST use it and cite the source URLs\n"
-            "4. If the context has partial information, use what's available and supplement with your knowledge\n"
+            "4. If the context has partial information, you may supplement with your knowledge, but only for educational/academic content\n"
             "5. Structure your response clearly with:\n"
             "   - Direct answer to the question\n"
             "   - Supporting evidence from context (when available)\n"

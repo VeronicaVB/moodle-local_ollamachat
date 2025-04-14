@@ -2,19 +2,19 @@
 define(['core/ajax', 'jquery'], function(AJAX, $) {
     return {
         init: function() {
-            // Elementos del DOM
+            //  DOM elements
             var messagesContainer = document.getElementById('local_ollamachat_messages');
             var form = document.getElementById('local_ollamachat_form');
             var textarea = document.getElementById('local_ollamachat_prompt');
             var submitButton = document.getElementById('local_ollamachat_submit');
 
-            // Autoajuste de altura del textarea
+            // Auto-adjust the height of the textarea
             textarea.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = this.scrollHeight + 'px';
             });
 
-            // Manejar Enter para enviar (Shift+Enter para nueva línea)
+            // Handle Enter to send (Shift+Enter for a new line)
             textarea.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -22,13 +22,12 @@ define(['core/ajax', 'jquery'], function(AJAX, $) {
                 }
             });
 
-            // Manejo del submit
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 var prompt = textarea.value.trim();
                 if (!prompt) return;
 
-                // Deshabilitar inputs durante el envío
+                // Disable inputs during submission
                 textarea.disabled = true;
                 submitButton.disabled = true;
 
@@ -73,7 +72,7 @@ define(['core/ajax', 'jquery'], function(AJAX, $) {
                 var messageClass = role === 'user' ? 'local_ollamachat_user_message' : 'local_ollamachat_assistant_message';
                 var messageHTML = [
                     '<div class="local_ollamachat_message ' + messageClass + '"' + (id ? ' id="' + id + '"' : '') + '>',
-                        '<div class="local_ollamachat_avatar">' + (role === 'user' ? '👤' : '🤖') + '</div>',
+                        '<div class="local_ollamachat_avatar">' + (role === 'user' ? '👤' : '✨') + '</div>',
                         '<div class="local_ollamachat_message_content">' + content + '</div>',
                     '</div>'
                 ].join('');
@@ -125,7 +124,6 @@ define(['core/ajax', 'jquery'], function(AJAX, $) {
                     formatted = '<p class="local_ollamachat_paragraph">' + formatted + '</p>';
                 }
 
-console.log(formatted);
                 return formatted;
             }
 
