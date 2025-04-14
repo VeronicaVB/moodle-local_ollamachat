@@ -23,8 +23,16 @@ if ($hassiteconfig) { // Needs this condition to ensure only site admins can see
         'local_ollamachat/knowledge_api_url',
         get_string('knowledgeurl', 'local_ollamachat'),
         get_string('knowledgeurl_desc', 'local_ollamachat'),
-        'https://tusitio.com/api/contenido',
+        'https://yoursite.com/api/content',
         PARAM_URL
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_ollamachat/assistant_name',
+        get_string('assistantname', 'local_ollamachat'),
+        '',
+        'Ollama Assistant',
+        PARAM_TEXT
     ));
 
     // Add the settings page to the local plugins category.

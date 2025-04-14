@@ -38,7 +38,8 @@ echo $OUTPUT->header();
 
 $templatecontext = [
     'token' => $token,
-    'wwwroot' => $CFG->wwwroot
+    'wwwroot' => $CFG->wwwroot,
+    'assistantname' => get_config('local_ollamachat', 'assistant_name'),
 ];
 
 echo $OUTPUT->render_from_template('local_ollamachat/chat_ui2', $templatecontext);
