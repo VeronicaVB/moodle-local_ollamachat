@@ -1,0 +1,41 @@
+<div class="local_ollamachat_container">
+    <!-- Header estilo ChatGPT -->
+    <div class="local_ollamachat_header d-flex align-items-center mb-3" data-token = "{{token}}">
+        <div class="local_ollamachat_header_icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h4 class="local_ollamachat_title mb-0">Ollama Assistant</h4>
+    </div>
+
+    <!-- Área de chat -->
+    <div id="local_ollamachat_messages" class="local_ollamachat_messages_container">
+        <!-- Mensajes aparecerán aquí dinámicamente -->
+    </div>
+
+    <!-- Input area mejorado -->
+    <div class="local_ollamachat_input_container">
+        <form id="local_ollamachat_form" class="local_ollamachat_form d-flex">
+            <textarea
+                id="local_ollamachat_prompt"
+                class="local_ollamachat_textarea"
+                rows="1"
+                placeholder="Message Ollama..."
+                autocomplete="off"
+            ></textarea>
+            <button
+                type="submit"
+                class="local_ollamachat_submit_btn btn btn-primary"
+                id = "local_ollamachat_submit"
+            >
+                <svg class="local_ollamachat_send_icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </form>
+        <div class="local_ollamachat_footer_note text-muted small mt-2">
+            Ollama Chat - May make mistakes. Verify important information.
+        </div>
+    </div>
+</div>

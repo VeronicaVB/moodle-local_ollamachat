@@ -1,0 +1,31 @@
+<div class="local-ollamachat-container">
+    <h3>{{#str}} ask, local_ollamachat {{/str}}</h3>
+    <form id="ollamachat-form">
+        <textarea id="ollama-prompt" rows="3" class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+    </form>
+    <div id="ollama-response" class="mt-3 p-3 bg-light rounded"></div>
+</div>
+
+{{#js}}
+require(['jquery'], function($) {
+    $('#ollamachat-form').submit(function(e) {
+        e.preventDefault();
+        const prompt = $('#ollama-prompt').val();
+        $.ajax({
+            url: M.cfg.wwwroot + '/webservice/rest/server.php',
+            type: 'POST',
+            data: {
+                wstoken: '{{token}}',
+                wsfunction: 'local_ollamachat_ask_with_knowledge',
+                prompt: prompt,
+                moodlewsrestformat: 'json'
+            },
+            success: function(response) {
+            console.log(response)
+                $('#ollama-response').html(response.response);
+            }
+        });
+    });
+});
+{{/js}}

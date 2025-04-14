@@ -1,0 +1,244 @@
+.local_ollamachat_container {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+.local_ollamachat_header {
+    padding: 15px;
+    background: #343541;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    gap: 10px;
+}
+.local_ollamachat_header_icon {
+    width: 32px;
+    height: 32px;
+    background: #10a37f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.local_ollamachat_title {
+    font-weight: 600;
+}
+.local_ollamachat_messages_container {
+    height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f7f7f8;
+    border-left: 1px solid #e5e5e6;
+    border-right: 1px solid #e5e5e6;
+    scroll-behavior: smooth;
+}
+.local_ollamachat_message {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    line-height: 1.5;
+}
+.local_ollamachat_user_message {
+    background: #ffffff;
+    padding-left: 20px;
+}
+.local_ollamachat_assistant_message {
+    background: #f7f7f8;
+    padding-left: 20px;
+}
+.local_ollamachat_avatar {
+    font-size: 1.2em;
+    margin-top: 3px;
+}
+.local_ollamachat_message_content {
+    flex-grow: 1;
+}
+.local_ollamachat_message_content pre {
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+.local_ollamachat_message_content code {
+    background: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+.local_ollamachat_input_container {
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid #e5e5e6;
+    border-top: none;
+}
+.local_ollamachat_form {
+    gap: 10px;
+}
+.local_ollamachat_textarea {
+    flex-grow: 1;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #e5e5e6;
+    resize: none;
+}
+.local_ollamachat_submit_btn {
+    align-self: flex-end;
+    padding: 0 20px;
+    background: #10a37f;
+    border: none;
+    height: 44px;
+}
+.local_ollamachat_send_icon {
+    vertical-align: middle;
+}
+.local_ollamachat_footer_note {
+    font-size: 12px;
+    text-align: center;
+}
+.local_ollamachat_loader {
+    display: flex;
+    gap: 5px;
+    padding: 10px 0;
+}
+.local_ollamachat_loader div {
+    width: 8px;
+    height: 8px;
+    background: #10a37f;
+    border-radius: 50%;
+    animation: local_ollamachat_bounce 1.5s infinite ease-in-out;
+}
+.local_ollamachat_loader div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.local_ollamachat_loader div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Estilo para el textarea y botón */
+#local_ollamachat_prompt {
+    resize: none;
+    min-height: 50px;
+    max-height: 200px;
+    transition: height 0.2s;
+}
+
+/* Botón de enviar */
+#local_ollamachat_submit {
+    transition: all 0.3s;
+}
+
+/* Estado de enviando */
+#local_ollamachat_submit.sending {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Loader animado */
+.local_ollamachat_loader {
+    display: inline-flex;
+    gap: 5px;
+    padding: 10px;
+}
+
+.local_ollamachat_loader div {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+    animation: local_ollamachat_bounce 1s infinite alternate;
+}
+
+.local_ollamachat_loader div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.local_ollamachat_loader div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+
+/* Estilos para alertas */
+.local_ollamachat_alert {
+    padding: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.local_ollamachat_alert-info {
+    background-color: #e7f5fe;
+    border-left: 4px solid #228be6;
+    color: #1862ab;
+}
+
+/* Estilos para items de enlace */
+.local_ollamachat_link_item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.local_ollamachat_link_item:hover {
+    background-color: #e9ecef;
+}
+
+.local_ollamachat_link_icon {
+    margin-right: 8px;
+    color: #495057;
+    font-size: 14px;
+}
+
+.local_ollamachat_link_item a {
+    color: #228be6;
+    word-break: break-all;
+    text-decoration: none;
+}
+
+.local_ollamachat_link_item a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para código */
+.local_ollamachat_code_container {
+    margin: 12px 0;
+}
+
+.local_ollamachat_code_block {
+    background-color: #282c34;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+.local_ollamachat_code {
+    font-family: 'Courier New', monospace;
+    color: #abb2bf;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.local_ollamachat_inline_code {
+    font-family: 'Courier New', monospace;
+    background-color: #f1f3f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e64980;
+    font-size: 90%;
+}
+
+/* Estilos para párrafos */
+.local_ollamachat_paragraph {
+    margin: 12px 0;
+    line-height: 1.6;
+    color: #343a40;
+}
+@keyframes local_ollamachat_bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
