@@ -17,12 +17,12 @@ $PAGE->set_title(get_string('pluginname', 'local_ollamachat'));
 $PAGE->set_heading(get_string('pluginname', 'local_ollamachat'));
 $PAGE->requires->css(new moodle_url($CFG->wwwroot . '/local/ollamachat/styles.css'));
 
-// Cargar token de servicio web (para el JS)
+// Load token service
 $token = optional_param('token', '', PARAM_ALPHANUM);
 global $DB;
 $tokens = $DB->get_records('external_tokens', [
     'userid' => $USER->id,
-    'name' => 'ollamachattoken' // ID del servicio "OllamaChat"
+    'name' => 'ollamachattoken' // ID of the service "OllamaChat"
 ]);
 
 if (empty($token)) {
@@ -34,10 +34,8 @@ if (empty($token)) {
     }
 }
 
-// Mostrar el header de Moodle
 echo $OUTPUT->header();
 
-// Renderizar la plantilla Mustache
 $templatecontext = [
     'token' => $token,
     'wwwroot' => $CFG->wwwroot
@@ -46,5 +44,5 @@ $templatecontext = [
 echo $OUTPUT->render_from_template('local_ollamachat/chat_ui2', $templatecontext);
 // Add amd scripts.
 $PAGE->requires->js_call_amd('local_ollamachat/controls', 'init',[]);
-// Mostrar el footer
+
 echo $OUTPUT->footer();
