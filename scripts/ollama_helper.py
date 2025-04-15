@@ -6,6 +6,7 @@ import sys
 import json
 from urllib.parse import urlparse
 from difflib import SequenceMatcher
+from functools import lru_cache
 
 # Encoding configuration for output
 sys.stdout.reconfigure(encoding='utf-8')
@@ -32,11 +33,8 @@ def process_knowledge(items, prompt):
         content = clean_text(item.get('content', ''))
         keywords = clean_text(item.get('keywords', ''))
 
-        # Combine all searchable text
-        searchable_text = f"{title} {keywords} {content} {url}"
-
         # Calculate relevance scores for different components
-        title_score = calculate_relevance(title, prompt) * 1.5  # Higher weight for title
+        title_score = calculate_relevance(title, prompt) * 1.5
         content_score = calculate_relevance(content, prompt) * 1.2
         keyword_score = calculate_relevance(keywords, prompt) * 1.3
         url_score = calculate_relevance(url, prompt)
@@ -44,12 +42,11 @@ def process_knowledge(items, prompt):
         # Combined weighted score
         total_score = (title_score + content_score + keyword_score + url_score) / 4
 
-        # Only include items with some minimal relevance
-        if total_score > 0.2:  # Adjust threshold as needed
+        if total_score > 0.2:
             scored_items.append({
                 'title': title,
                 'url': url,
-                'content': content[:1000],  # Limit length but keep more context
+                'content': content[:800],  # Reduced from 1000 to 800
                 'keywords': keywords,
                 'score': total_score
             })
@@ -60,77 +57,77 @@ def process_knowledge(items, prompt):
     # Prepare context and collect sources
     context = []
     sources = []
-    for item in scored_items[:5]:  # Take top 5 most relevant
+    for item in scored_items[:3]:  # Reduced from 5 to 3 most relevant
         entry = (
-            f"### {item['title']} (Relevance: {item['score']:.2f})\n"
-            f"- **URL:** {item['url']}\n"
-            f"- **Keywords:** {item['keywords']}\n"
-            f"- **Content:** {item['content'][:500]}...\n"
+            f"### {item['title']}\n"
+            f"Content: {item['content'][:400]}...\n"  # Reduced from 500 to 400
         )
         context.append(entry)
         sources.append(item['url'])
 
-    return "\n\n".join(context), sources
+    return "\n".join(context), sources
 
-def fetch_knowledge(url):
-    """Fetches knowledge from API with enhanced error handling"""
+@lru_cache(maxsize=500)
+def fetch_knowledge_cached(url):
+    """Cached version of knowledge fetching"""
     try:
-        # Basic URL validation
         if not urlparse(url).scheme:
-            raise ValueError("Invalid URL")
+            return []
 
         response = requests.get(
             url,
-            timeout=15,
+            timeout=10,  # Reduced from 15 to 10 seconds
             headers={
                 'Accept': 'application/json; charset=utf-8',
-                'User-Agent': 'Mozilla/5.0 (compatible; KnowledgeIntegration/1.0)'
+                'User-Agent': 'Mozilla/5.0'
             }
         )
-        response.encoding = 'utf-8'
         response.raise_for_status()
 
-        # Handle different response formats
         data = response.json()
-        if isinstance(data, dict) and 'results' in data:
-            return data['results']
-        elif isinstance(data, list):
-            return data
-        else:
-            return []
+        return data.get('results', []) if isinstance(data, dict) else data if isinstance(data, list) else []
 
-    except requests.exceptions.RequestException as e:
-        print(f"API Request Error: {str(e)}", file=sys.stderr)
-        return []
-    except json.JSONDecodeError:
-        print("API returned invalid JSON", file=sys.stderr)
-        return []
     except Exception as e:
-        print(f"Unexpected error: {str(e)}", file=sys.stderr)
+        print(f"Knowledge API Error: {str(e)}", file=sys.stderr)
         return []
+
+def format_response_with_sources(response_text, knowledge, sources):
+    """Enhances the response with source information"""
+    if not sources:
+        return response_text
+
+    # Check if sources are already mentioned
+    if any(src in response_text for src in sources):
+        return response_text
+
+    # Add sources with context
+    source_intro = "\n\nFor more information, you can refer to:"
+    if knowledge:
+        first_title = knowledge.split('###')[1].split('\n')[0].strip() if '###' in knowledge else ""
+        source_intro = f"\n\nBased on our resources about {first_title}, you can refer to:"
+
+    return response_text + source_intro + "\n" + "\n".join([f" {url}" for url in sources[:3]])
 
 def generate_response(prompt, knowledge_url=None):
     """Generates response using Ollama with enhanced knowledge integration"""
     try:
-        # 1. Get and process knowledge if URL provided
+        # 1. Get and process knowledge
         knowledge = ""
         sources = []
 
         if knowledge_url:
-            data = fetch_knowledge(knowledge_url)
+            data = fetch_knowledge_cached(knowledge_url)
             if data:
                 knowledge, sources = process_knowledge(data, prompt)
-            else:
-                knowledge = "\n[NOTE: No valid knowledge data was retrieved from the provided URL]"
 
-        # 2. Build enhanced prompt with clearer instructions
+        # 2. Your original full_prompt
         full_prompt = (
-            "You are a knowledgeable educational assistant focused on helping in academic contexts.\n"
+            "You are a knowledgeable assistant that integrates information from provided context with your own knowledge.\n"
             "Instructions:\n"
             "1. First carefully analyze the user's question to understand what information is being requested\n"
             "2. Thoroughly search through ALL provided context including titles, URLs, keywords, and content\n"
             "3. If relevant information exists in the context, you MUST use it and cite the source URLs\n"
-            "4. If the context has partial information, you may supplement with your knowledge, but only for educational/academic content\n"
+            "4. If the context has partial information, use what's available and supplement with your knowledge\n"
             "5. Structure your response clearly with:\n"
             "   - Direct answer to the question\n"
             "   - Supporting evidence from context (when available)\n"
@@ -141,68 +138,57 @@ def generate_response(prompt, knowledge_url=None):
             "Please provide a comprehensive response that directly addresses the user's question:"
         )
 
-        # 3. Query Ollama with better parameters
+        # 3. Query Ollama with optimized parameters
         ollama_response = requests.post(
             "http://localhost:11434/api/generate",
             json={
-                "model": "llama3.2:latest",
+                "model": "phi3:3.8b-instruct",  # Faster model
                 "prompt": full_prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.5,  # Slightly higher for creativity when needed
-                    "num_ctx": 8192,     # Larger context window
-                    "top_k": 50,         # Consider more tokens
-                    "repeat_penalty": 1.1  # Reduce repetition
+                    "temperature": 0.3,  # Slightly lower for more precise answers
+                    "num_ctx": 2048,     # Sufficient context window
+                    "top_k": 20,         # Reduced from 30
+                    "repeat_penalty": 1.2,
+                    "num_threads": 8,    # Optimized for your CPU
+                    "stop": ["\n", "###"]
                 }
             },
-            timeout=600
+            timeout=30  # Reduced from 150
         )
-        ollama_response.encoding = 'utf-8'
-        ollama_response.raise_for_status()
 
         response_data = ollama_response.json()
         response_text = response_data.get("response", "")
 
-        # 4. Post-process the response to ensure quality
-        if "no information" in response_text.lower() and knowledge:
-            # If the model missed relevant context, try to extract it
-            response_text = (
-                "Based on the provided context, here's what I found:\n\n"
-                f"{knowledge[:2000]}\n\n"
-                "Please let me know if you'd like me to analyze this information further."
-            )
-
-        # Add sources if we have them and they're not already mentioned
-        if sources and not any(src in response_text for src in sources):
-            response_text += "\n\nRelevant sources from context:\n- " + "\n- ".join(sources[:3])
+        # 4. Enhance response with sources if needed
+        response_text = format_response_with_sources(response_text, knowledge, sources)
 
         return {
             "success": True,
             "response": response_text,
             "sources": sources,
-            "context_used": bool(knowledge.strip()) if knowledge else False
+            "context_used": bool(knowledge.strip())
         }
 
     except requests.exceptions.RequestException as e:
         return {
             "success": False,
-            "response": f"Connection Error: Failed to communicate with Ollama - {str(e)}",
+            "response": "I'm having trouble accessing our knowledge base. Please try again later.",
             "sources": []
         }
     except Exception as e:
         return {
             "success": False,
-            "response": f"System Error: {str(e)}",
+            "response": "An unexpected error occurred. Please try again or contact support.",
             "sources": []
         }
 
 if __name__ == "__main__":
     try:
-        # Argument handling
         if len(sys.argv) < 2:
             print(json.dumps({
                 "success": False,
-                "response": "Error: Please provide at least a prompt as argument",
+                "response": "Please provide your question as an argument",
                 "sources": []
             }))
             sys.exit(1)
@@ -210,14 +196,12 @@ if __name__ == "__main__":
         prompt = sys.argv[1]
         knowledge_url = sys.argv[2] if len(sys.argv) > 2 else None
 
-        # Generate and print response
         result = generate_response(prompt, knowledge_url)
         print(json.dumps(result, ensure_ascii=False, indent=2))
 
     except Exception as e:
-        error_response = {
+        print(json.dumps({
             "success": False,
-            "response": f"Critical Error: {str(e)}",
+            "response": "We're experiencing technical difficulties. Please try again later.",
             "sources": []
-        }
-        print(json.dumps(error_response, ensure_ascii=False))
+        }, ensure_ascii=False))

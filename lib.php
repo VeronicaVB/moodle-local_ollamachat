@@ -9,11 +9,11 @@ function local_ollama_extend_settings_navigation($settingsnav, $context) {
     }
 }
 
-// Función del servicio web
+// Webservice function
 function local_ollama_ask($prompt) {
     require_capability('local/ollama:ask', context_system::instance());
 
-    // Ejecuta Python (opción 1) o llama a Ollama directamente (opción 2)
+    //  Execute Python
     $python_script = __DIR__ . '/scripts/ollama_helper.py';
     $escaped_prompt = escapeshellarg($prompt);
     $json_output = shell_exec("python3 {$python_script} {$escaped_prompt}");

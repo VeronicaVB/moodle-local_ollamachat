@@ -18,26 +18,26 @@ $PAGE->set_heading(get_string('pluginname', 'local_ollamachat'));
 $PAGE->requires->css(new moodle_url($CFG->wwwroot . '/local/ollamachat/styles.css'));
 
 // Load token service
-$token = optional_param('token', '', PARAM_ALPHANUM);
-global $DB;
-$tokens = $DB->get_records('external_tokens', [
-    'userid' => $USER->id,
-    'name' => 'ollamachattoken' // ID of the service "OllamaChat"
-]);
+// $token = optional_param('token', '', PARAM_ALPHANUM);
+// global $DB;
+// $tokens = $DB->get_records('external_tokens', [
+//     'userid' => $USER->id,
+//     'name' => 'ollamachattoken' // ID of the service "OllamaChat"
+// ]);
 
-if (empty($token)) {
-    foreach ($tokens as $t) {
-        if ($t->name == 'ollamachattoken') {
-            $token = $t->token;
-            break;
-        }
-    }
-}
+// if (empty($token)) {
+//     foreach ($tokens as $t) {
+//         if ($t->name == 'ollamachattoken') {
+//             $token = $t->token;
+//             break;
+//         }
+//     }
+// }
 
 echo $OUTPUT->header();
 
 $templatecontext = [
-    'token' => $token,
+    'token' => '',
     'wwwroot' => $CFG->wwwroot,
     'assistantname' => get_config('local_ollamachat', 'assistant_name'),
 ];

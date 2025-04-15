@@ -1,5 +1,5 @@
 
-define(['core/ajax', 'jquery'], function(AJAX, $) {
+define(['core/ajax', 'jquery',  'core/notification'], function(Ajax, $, Notification) {
     return {
         init: function() {
             //  DOM elements
@@ -42,29 +42,51 @@ define(['core/ajax', 'jquery'], function(AJAX, $) {
                 var wstoken = document.querySelector('.local_ollamachat_header').dataset.token
                 console.log(wstoken);
 
-                $.ajax({
-                    url: M.cfg.wwwroot + '/webservice/rest/server.php',
-                    type: 'POST',
-                    data: {
-                        wstoken: wstoken,
-                        wsfunction: 'local_ollamachat_ask_with_knowledge',
+                // $.ajax({
+                //     url: M.cfg.wwwroot + '/webservice/rest/server.php',
+                //     type: 'POST',
+                //     data: {
+                //         wstoken: wstoken,
+                //         wsfunction: 'local_ollamachat_ask_with_knowledge',
+                //         prompt: prompt,
+                //         moodlewsrestformat: 'json'
+                //     },
+                //     success: function(response) {
+                //         updateMessageContent(messageId, formatResponse(response.response));
+                //     },
+                //     error: function() {
+                //         updateMessageContent(messageId,
+                //             '<div class="alert alert-danger">Error connecting to the server</div>'
+                //         );
+                //     }
+                // }).always(function() {
+                //     textarea.disabled = false;
+                //     submitButton.disabled = false;
+                //     textarea.focus();
+                //     scrollToBottom();
+                // });
+
+                var promise = Ajax.call([{
+                    methodname: 'local_ollamachat_ask_with_knowledge',
+                    args: {
                         prompt: prompt,
                         moodlewsrestformat: 'json'
-                    },
-                    success: function(response) {
-                        updateMessageContent(messageId, formatResponse(response.response));
-                    },
-                    error: function() {
-                        updateMessageContent(messageId,
-                            '<div class="alert alert-danger">Error connecting to the server</div>'
-                        );
                     }
+                }])[0];
+
+                promise.done(function(response) {
+                    updateMessageContent(messageId, formatResponse(response.response));
+                }).fail(function(error) {
+                    updateMessageContent(messageId,
+                        '<div class="alert alert-danger">Error connecting to the server</div>'
+                    );
                 }).always(function() {
                     textarea.disabled = false;
                     submitButton.disabled = false;
                     textarea.focus();
                     scrollToBottom();
                 });
+
 
             });
 

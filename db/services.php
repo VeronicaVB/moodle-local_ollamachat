@@ -8,6 +8,7 @@ $functions = [
         'classpath'   => 'local/ollamachat/externallib.php', // Path to the external class.
         'description' => 'Ask a question to Ollama.', // Description of the web service function.
         'type'        => 'read',                     // Type of operation: read or write.
+        'ajax'        => 'true',
         // 'capabilities'=> 'local/ollamachat:use',     // Required capability.
     ],
     'local_ollamachat_ask_with_knowledge' => [
@@ -16,6 +17,7 @@ $functions = [
         'classpath'   => 'local/ollamachat/externallib.php', // Path to the external class.
         'description' => 'Ask a question to Ollama you can use kb content.', // Description of the web service function.
         'type'        => 'read',                     // Type of operation: read or write.
+        'ajax'        => 'true',
         // 'capabilities'=> 'local/ollamachat:use',     // Required capability.
     ],
 ];
