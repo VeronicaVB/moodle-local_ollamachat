@@ -25,7 +25,6 @@ $templatecontext = [
 ];
 
 echo $OUTPUT->render_from_template('local_ollamachat/chat_ui', $templatecontext);
-echo $OUTPUT->render_from_template('local_ollamachat/popup_chat', $templatecontext);
 // Add amd scripts.
 $PAGE->requires->js_call_amd('local_ollamachat/controls', 'init',[]);
 
