@@ -27,3 +27,5 @@ $string['ask'] = 'Ask Ollama';
 $string['knowledgeurl'] = 'Knowledge API URL';
 $string['knowledgeurl_desc'] = 'JSON endpoint returning structured website content (e.g., https://yoursite.com/api/content). Include authentication parameters if required.';
 $string['assistantname'] = 'The name that will appear on the header of your assistant';
+$string['generate_embeddings_task'] = 'Generate embeddings from KB';
+

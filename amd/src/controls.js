@@ -39,33 +39,6 @@ define(['core/ajax', 'jquery',  'core/notification'], function(Ajax, $, Notifica
                 var messageId = 'local_ollamachat_msg_' + Date.now();
                 addMessage('assistant', '<div class="local_ollamachat_loader"><div></div><div></div><div></div></div>', messageId);
 
-                var wstoken = document.querySelector('.local_ollamachat_header').dataset.token
-                console.log(wstoken);
-
-                // $.ajax({
-                //     url: M.cfg.wwwroot + '/webservice/rest/server.php',
-                //     type: 'POST',
-                //     data: {
-                //         wstoken: wstoken,
-                //         wsfunction: 'local_ollamachat_ask_with_knowledge',
-                //         prompt: prompt,
-                //         moodlewsrestformat: 'json'
-                //     },
-                //     success: function(response) {
-                //         updateMessageContent(messageId, formatResponse(response.response));
-                //     },
-                //     error: function() {
-                //         updateMessageContent(messageId,
-                //             '<div class="alert alert-danger">Error connecting to the server</div>'
-                //         );
-                //     }
-                // }).always(function() {
-                //     textarea.disabled = false;
-                //     submitButton.disabled = false;
-                //     textarea.focus();
-                //     scrollToBottom();
-                // });
-
                 var promise = Ajax.call([{
                     methodname: 'local_ollamachat_ask_with_knowledge',
                     args: {

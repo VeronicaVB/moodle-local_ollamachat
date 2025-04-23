@@ -17,7 +17,7 @@
 
 /**
  * @package   local_ollamachat
- * @copyright 2020 Michael Vangelovski <michael.vangelovski@hotmail.com>
+ * @copyright 2025 Veronica Bermegui
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
